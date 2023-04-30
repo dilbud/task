@@ -6,16 +6,17 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoField;
 import java.util.List;
 
 @Service
 public class TaskService {
 
     private final EventRepository eventRepository;
+    private final TaskServiceHelper taskServiceHelper;
 
-    TaskService(EventRepository eventRepository) {
+    TaskService(EventRepository eventRepository, TaskServiceHelper taskServiceHelper) {
         this.eventRepository = eventRepository;
+        this.taskServiceHelper = taskServiceHelper;
     }
 
     public LocalDate getEndDate(LocalDate startDate, Integer days) {
@@ -27,7 +28,7 @@ public class TaskService {
         do {
             List<Event> eventList =
                     eventRepository.findEventByBetweenStartDateAndEndDate(startDateLocal, endDateLocal);
-            int weekEndDays = numberOfWeekEndDaysInRange(
+            int weekEndDays = taskServiceHelper.numberOfWeekEndDaysInRange(
                     LocalDate.of(startDateLocal.getYear(), startDateLocal.getMonth(), startDateLocal.getDayOfMonth()),
                     LocalDate.of(endDateLocal.getYear(), endDateLocal.getMonth(), endDateLocal.getDayOfMonth()));
 
@@ -37,7 +38,7 @@ public class TaskService {
                 sumOfNonWorkDays = weekEndDays + eventList.size();
             } else {
                 int sumOfNonWorkDaysDuplicates = eventList.size() + weekEndDays;
-                int common = (int) eventList.stream().map(Event::getDate).filter(this::isWeekend).count();
+                int common = (int) eventList.stream().map(Event::getDate).filter(taskServiceHelper::isWeekend).count();
                 sumOfNonWorkDays = sumOfNonWorkDaysDuplicates - common;
             }
 
@@ -52,19 +53,5 @@ public class TaskService {
         return endDateLocal;
     }
 
-    public int numberOfWeekEndDaysInRange(LocalDate startDate, LocalDate endDate) {
-        int numberOfDays = 0;
-        while (startDate.isBefore(endDate.plusDays(1))) {
-            if(isWeekend(startDate)) {
-                ++numberOfDays;
-            }
-            startDate = startDate.plusDays(1);
-        }
-        return numberOfDays;
-    }
 
-    public boolean isWeekend(LocalDate ld) {
-        DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
-        return day == DayOfWeek.SUNDAY || day == DayOfWeek.SATURDAY;
-    }
 }
