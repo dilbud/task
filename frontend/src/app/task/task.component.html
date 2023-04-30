@@ -1,0 +1,48 @@
+<div class="container">
+    <mat-card class="container-card">
+        <mat-card class="calendar-card">
+            <mat-spinner *ngIf="!(taskService.eventLoadedSubject | async)"></mat-spinner>
+            <mat-calendar *ngIf="(taskService.eventLoadedSubject | async)" [selected]="selection"
+                [comparisonStart]="taskRange.start" [comparisonEnd]="taskRange.end" [dateClass]="dateClass"
+                [dateFilter]="dateFilter" (selectedChange)="onSelect($event)"></mat-calendar>
+        </mat-card>
+        <mat-card class="calendar-card">
+            <mat-spinner *ngIf="!(taskService.eventLoadedSubject | async)"></mat-spinner>
+            <form class="form" *ngIf="(taskService.eventLoadedSubject | async)" [formGroup]="form">
+                <mat-form-field appearance="fill">
+                    <mat-label>Task Start date</mat-label>
+                    <input matInput [matDatepicker]="picker" placeholder="MM/DD/YYYY" formControlName="startDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker [dateClass]="dateClass" #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Number of Days</mat-label>
+                    <input type="number" min="1" matInput placeholder="Number" formControlName="days">
+                </mat-form-field>
+
+                <div class="container-submit">
+                    <button class="submit" mat-raised-button [disabled]="!form.valid" (click)="submit()">Calculate End
+                        Date</button>
+                    <button class="reset" mat-raised-button [disabled]="false" (click)="reset()">Reset</button>
+                </div>
+            </form>
+            <form class=" form form-result" *ngIf="(taskService.eventLoadedSubject | async)">
+                <mat-form-field appearance="fill">
+                    <mat-label>Task End date</mat-label>
+                    <input readonly matInput [matDatepicker]="pickerResult" placeholder="MM/DD/YYYY"
+                        [formControl]="result">
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerResult"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerResult [disabled]="true"></mat-datepicker>
+                </mat-form-field>
+                <mat-list *ngIf="dayDescription">
+                    <mat-divider></mat-divider>
+                    <mat-list-item>{{dayDescription}}</mat-list-item>
+                    <mat-divider></mat-divider>
+                    <mat-list-item>{{day}}</mat-list-item>
+                    <mat-divider></mat-divider>
+                </mat-list>
+            </form>
+        </mat-card>
+    </mat-card>
+</div>

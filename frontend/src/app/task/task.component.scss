@@ -1,0 +1,65 @@
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100vh;
+    background-color: #f3f3f3;
+
+    overflow: auto;
+}
+
+.container-card {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: flex-start;
+    min-height: 510px;
+}
+
+.calendar-card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 25vw;
+    height: 65vh;
+    min-height: 469px;
+    min-width: 384px;
+    margin: 25px;
+  }
+
+  .form {
+    width: 100%;
+  }
+
+  .form mat-form-field {
+    width: 100%;
+  }
+
+.container-submit {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .submit {
+      margin-right: 10px;
+    }
+
+    .reset {
+      margin-left: 10px;
+    }
+  }
+
+  .form-result {
+    margin-top: 20px;
+  }
+
+
+  @media screen and (max-width: 992px) {
+    .container-card {
+        flex-direction: column;
+    }
+  }
